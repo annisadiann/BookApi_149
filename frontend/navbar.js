@@ -11,6 +11,7 @@ function initNavbar(activePage) {
         return;
     }
 
+    // PAKAI BACKTICK (`) DI AWAL DAN AKHIR
     const navbarHTML = `
         <aside class="sidebar-wrapper">
             <div class="sidebar-header" onclick="window.location.href='/'">
@@ -25,12 +26,10 @@ function initNavbar(activePage) {
             <div class="sidebar-content">
                 <div class="nav-label">MAIN MENU</div>
                 <nav class="nav-menu">
-                    <!-- ARAHKAN KE DEVELOPER.HTML -->
                     <div class="menu-item ${activePage === 'developer' ? 'active' : ''}" onclick="window.location.href='developer.html'">
                         <i class="fas fa-key"></i>
                         <span>API Management</span>
                     </div>
-                    <!-- ARAHKAN KE PLAYGROUND.HTML (BUKAN EXPLORER) -->
                     <div class="menu-item ${activePage === 'playground' ? 'active' : ''}" onclick="window.location.href='playground.html'">
                         <i class="fas fa-vial"></i>
                         <span>API Playground</span>
@@ -63,7 +62,9 @@ function initNavbar(activePage) {
     `;
 
     const container = document.getElementById('navbar-container');
-    if(container) container.innerHTML = navbarHTML;
+    if(container) {
+        container.innerHTML = navbarHTML;
+    }
 }
 
 function logout() {
@@ -89,8 +90,20 @@ function injectNavbarStyles() {
     const style = document.createElement('style');
     style.id = 'navbar-styles';
     style.innerHTML = `
-        :root { --sidebar-w: 280px; --cyan: #00d2ff; --glass: rgba(15, 23, 42, 0.85); --border: rgba(255, 255, 255, 0.1); }
-        .sidebar-wrapper { width: var(--sidebar-w); height: 100vh; position: fixed; left: 0; top: 0; background: var(--glass); backdrop-filter: blur(25px); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 35px 20px; z-index: 1000; }
+        :root {
+            --sidebar-w: 280px;
+            --cyan: #00d2ff;
+            --glass: rgba(15, 23, 42, 0.85);
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-wrapper {
+            width: var(--sidebar-w); height: 100vh; position: fixed;
+            left: 0; top: 0; background: var(--glass); backdrop-filter: blur(25px);
+            border-right: 1px solid var(--border); display: flex; flex-direction: column;
+            padding: 35px 20px; z-index: 1000;
+        }
+
         .sidebar-header { display: flex; align-items: center; gap: 15px; cursor: pointer; margin-bottom: 45px; }
         .logo-glow-icon { font-size: 1.8rem; color: var(--cyan); filter: drop-shadow(0 0 10px var(--cyan)); }
         .logo-text { font-weight: 800; font-size: 1.4rem; color: #fff; letter-spacing: -1px; }
