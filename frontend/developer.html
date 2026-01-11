@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Developer Dashboard - API Keys</title>
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <style>
+        :root {
+            --primary: #00d2ff;
+            --secondary: #0066ff;
+            --dark-bg: #030712;
+            --sidebar-w: 280px;
+            --glass-bg: rgba(15, 23, 42, 0.75);
+            --border: rgba(255, 255, 255, 0.15);
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: linear-gradient(to bottom, rgba(3, 7, 18, 0.8), rgba(3, 7, 18, 0.95)), 
+                        url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&q=80&w=2000');
+            background-size: cover;
+            background-attachment: fixed;
+            color: #ffffff;
+            min-height: 100vh;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        .dashboard-container { display: flex; }
+
+        .main-content {
+            margin-left: var(--sidebar-w);
+            flex: 1;
+            padding: 50px 60px;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Header Teks */
+        .page-header h2 { font-weight: 800; letter-spacing: -1.5px; font-size: 2.5rem; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+        .page-header h5 { color: var(--primary) !important; font-weight: 800; letter-spacing: 2px; text-shadow: 0 0 10px rgba(0, 210, 255, 0.3); }
+
+        /* Card Glassmorphism */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px);
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            margin-top: 30px;
+        }
+
+        /* TABLE STYLING - SEMUA BACKGROUND PUTIH, FONT HITAM */
+        .table { 
+            color: #000; 
+            margin-bottom: 0; 
+            border-collapse: separate; 
+        }
+        .table thead { 
+            background: rgba(255, 255, 255, 0.95); 
+        }
+        .table thead th {
+            padding: 22px 30px;
+            font-size: 1.05rem; 
+            font-weight: 900; 
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-bottom: 3px solid var(--primary); 
+            color: #000000 !important;
+        }
+        .table tbody {
+            background: rgba(255, 255, 255, 0.92); /* Background putih untuk isi tabel */
+        }
+        .table tbody td {
+            padding: 25px 30px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            vertical-align: middle;
+            font-weight: 700; 
+            color: #000000 !important; /* Font HITAM untuk isi tabel */
+            font-size: 1rem;
+        }
+
+        /* Styling khusus untuk kolom "Dibuat Pada" */
+        .table tbody td.date-column {
+            color: #000000 !important; /* HITAM tegas */
+            font-weight: 800 !important; /* Extra bold */
+        }
+
+        /* API Key Styling */
+        .key-input-container {
+            background: rgba(240, 240, 240, 1);
+            border: 1.5px solid var(--primary);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            padding: 10px 18px;
+            max-width: 450px;
+            transition: 0.3s;
+            box-shadow: 0 0 15px rgba(0, 210, 255, 0.3);
+        }
+
+        .key-input {
+            border: none; 
+            background: transparent;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.95rem; 
+            color: #000000; /* API Key jadi hitam */
+            font-weight: 700;
+            width: 100%; 
+            outline: none;
+        }
+
+        .copy-btn { 
+            border: none; 
+            background: transparent; 
+            color: var(--primary); 
+            font-size: 1.1rem; 
+            transition: 0.2s; 
+            cursor: pointer; 
+        }
+        .copy-btn:hover { 
+            transform: scale(1.2); 
+            color: var(--secondary); 
+        }
+
+        .badge-active {
+            background: rgba(16, 185, 129, 0.3);
+            color: #059669;
+            padding: 10px 24px;
+            border-radius: 100px;
+            font-weight: 900;
+            font-size: 0.8rem;
+            border: 2px solid #059669;
+        }
+
+        .btn-regenerate {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: #000; 
+            border: none; 
+            padding: 15px 30px; 
+            border-radius: 16px;
+            font-weight: 800; 
+            transition: 0.3s; 
+            box-shadow: 0 10px 20px rgba(0, 210, 255, 0.4);
+            text-transform: uppercase; 
+            letter-spacing: 1px;
+        }
+        .btn-regenerate:hover { 
+            transform: translateY(-3px); 
+            box-shadow: 0 15px 30px rgba(0, 210, 255, 0.6); 
+        }
+
+        /* Tips Card */
+        .tips-card {
+            background: rgba(0, 210, 255, 0.1);
+            border: 2px solid var(--primary);
+            border-radius: 25px;
+            padding: 30px;
+            display: flex;
+            gap: 25px;
+            margin-top: 40px;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .tips-icon {
+            width: 60px; 
+            height: 60px;
+            background: var(--primary);
+            border-radius: 18px;
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            color: #000; 
+            font-size: 1.8rem; 
+            flex-shrink: 0;
+            box-shadow: 0 0 20px rgba(0, 210, 255, 0.5);
+        }
+        .tips-text {
+            color: #ffffff !important; 
+            font-weight: 600; 
+            line-height: 1.7;
+            font-size: 0.95rem;
+        }
+
+        /* Modal */
+        .modal-content { 
+            background: #0f172a; 
+            border-radius: 30px; 
+            border: 1px solid var(--primary); 
+            color: #fff; 
+        }
+        .form-control-custom { 
+            background: rgba(255,255,255,0.05); 
+            border: 1.5px solid var(--border); 
+            color: #fff; 
+            border-radius: 15px; 
+            padding: 15px; 
+        }
+        .form-control-custom:focus { 
+            border-color: var(--primary); 
+            background: rgba(255,255,255,0.1); 
+            outline: none; 
+            box-shadow: none; 
+        }
+
+        @media (max-width: 992px) { 
+            .main-content { 
+                margin-left: 0; 
+                padding: 100px 20px 40px; 
+            } 
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <!-- Sidebar container -->
+        <div id="navbar-container"></div>
+
+        <main class="main-content">
+            <header class="d-flex justify-content-between align-items-end mb-5">
+                <div>
+                    <h5 class="mb-2"><i class="fas fa-book-bookmark me-2"></i>DATABASE ACCESS</h5>
+                    <h2 class="fw-800">API Management</h2>
+                    <p class="text-white-50 mb-0">Kelola kredensial Anda untuk integrasi data perpustakaan global.</p>
+                </div>
+                <button onclick="regenerateKey()" class="btn btn-regenerate" id="btnRegenerate" style="display: none;">
+                    <i class="fas fa-sync-alt me-2"></i>Regenerate Key
+                </button>
+            </header>
+
+            <div class="glass-card">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>API KEY NAME</th>
+                                <th>TOKEN AKSES API</th>
+                                <th class="text-center">STATUS</th>
+                                <th class="text-end">DIBUAT PADA</th>
+                            </tr>
+                        </thead>
+                        <tbody id="apiKeyTableBody">
+                            <tr>
+                                <td colspan="4" class="text-center py-5">
+                                    <i class="fas fa-spinner fa-spin text-primary fs-2 mb-3"></i>
+                                    <div class="fw-600" style="color: #666;">Sinkronisasi Database...</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="tips-card">
+                <div class="tips-icon">
+                    <i class="fas fa-book"></i>
+                </div>
+                <div>
+                    <h6 class="fw-800 text-primary mb-2">PANDUAN KEAMANAN DEVELOPER</h6>
+                    <p class="tips-text mb-0">Jangan pernah membagikan API Key Anda di repositori publik. Selalu gunakan <strong>Environment Variables (.env)</strong> untuk menjaga kerahasiaan akses aplikasi Anda.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- MODAL -->
+    <div class="modal fade" id="regenerateKeyModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content p-4">
+                <div class="modal-header border-0 pb-0">
+                    <h4 class="fw-800 text-primary"><i class="fas fa-redo-alt me-2"></i>Update API Key</h4>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-white-50 small mb-4">Peringatan: Kunci lama akan segera non-aktif setelah proses ini selesai.</p>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-primary">API KEY NAME</label>
+                        <input type="text" id="regenerateKeyName" class="form-control-custom w-100" placeholder="Contoh: My App Production" required>
+                    </div>
+                    <div class="d-flex gap-2 mt-4">
+                        <button class="btn btn-secondary w-50 py-3 fw-bold" style="border-radius: 15px;" data-bs-dismiss="modal">BATAL</button>
+                        <button onclick="submitRegenerateKey()" class="btn btn-regenerate w-50 py-3 fw-bold" style="margin-top:0">REGENERATE</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="navbar.js"></script>
+    
+    <script>
+        initNavbar('developer');
+        const currentKey = localStorage.getItem('book_api_key');
+
+        async function loadApiKeys() {
+            try {
+                const res = await fetch('/api/auth/my-keys', { headers: { 'x-api-key': currentKey } });
+                const result = await res.json();
+                const tbody = document.getElementById('apiKeyTableBody');
+                tbody.innerHTML = '';
+
+                if (!result.data || result.data.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="4" class="text-center py-5" style="color: #666;">Belum ada API Key terdaftar.</td></tr>`;
+                    return;
+                }
+
+                document.getElementById('btnRegenerate').style.display = 'block';
+
+                result.data.forEach(item => {
+                    const date = new Date(item.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+                    tbody.innerHTML += `
+                        <tr>
+                            <td><div class="fw-bold fs-6">${item.name || 'Default Key'}</div></td>
+                            <td>
+                                <div class="key-input-container">
+                                    <input type="text" class="key-input" value="${item.api_key}" readonly>
+                                    <button class="copy-btn" onclick="copyKey('${item.api_key}')"><i class="far fa-copy"></i></button>
+                                </div>
+                            </td>
+                            <td class="text-center"><span class="badge-active">AKTIF</span></td>
+                            <td class="text-end date-column">${date}</td>
+                        </tr>`;
+                });
+            } catch (e) { 
+                tbody.innerHTML = `<tr><td colspan="4" class="text-center py-4" style="color: #dc3545;">Gagal sinkronisasi server.</td></tr>`;
+            }
+        }
+
+        function regenerateKey() {
+            document.getElementById('regenerateKeyName').value = '';
+            new bootstrap.Modal(document.getElementById('regenerateKeyModal')).show();
+        }
+
+        async function submitRegenerateKey() {
+            const name = document.getElementById('regenerateKeyName').value.trim();
+            if (!name) return Swal.fire('Oops!', 'Nama label wajib diisi', 'warning');
+            
+            try {
+                const res = await fetch('/api/auth/regenerate-key', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'x-api-key': currentKey },
+                    body: JSON.stringify({ name })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    localStorage.setItem('book_api_key', data.api_key);
+                    Swal.fire({ title: 'Berhasil!', text: 'API Key baru telah diaktifkan.', icon: 'success', background: '#0f172a', color: '#fff' })
+                    .then(() => location.reload());
+                }
+            } catch (e) { Swal.fire('Error', 'Sistem sibuk, coba lagi nanti', 'error'); }
+        }
+
+        function copyKey(text) {
+            navigator.clipboard.writeText(text);
+            Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Key disalin!', showConfirmButton: false, timer: 2000, background: '#0f172a', color: '#fff' });
+        }
+
+        window.onload = loadApiKeys;
+    </script>
+</body>
+</html>

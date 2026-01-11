@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book API - The Global Library Database Engine</title>
+    
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <!-- SweetAlert2 untuk Notifikasi Keren -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        :root {
+            --primary: #00d2ff;
+            --secondary: #0066ff;
+            --dark-bg: #030712;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--dark-bg);
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        /* Hero Background - Cerah & Jelas */
+        .hero-wrapper {
+            position: relative;
+            min-height: 100vh;
+            background: linear-gradient(to bottom, rgba(3, 7, 18, 0.3), rgba(3, 7, 18, 0.7)), 
+                        url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&q=80&w=2000');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Navbar Custom */
+        .navbar {
+            background: rgba(3, 7, 18, 0.7);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 20px 0;
+        }
+
+        .navbar-brand {
+            font-weight: 800;
+            font-size: 1.5rem;
+            letter-spacing: -1px;
+            color: #fff !important;
+        }
+
+        .navbar-brand i {
+            color: var(--primary);
+            margin-right: 10px;
+        }
+
+        /* Buttons Style */
+        .btn-custom {
+            padding: 12px 28px;
+            border-radius: 12px;
+            font-weight: 700;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-primary-gradient {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none;
+            color: white;
+            box-shadow: 0 10px 20px rgba(0, 102, 255, 0.3);
+        }
+
+        .btn-primary-gradient:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(0, 102, 255, 0.4);
+            color: white;
+        }
+
+        .btn-outline-glass {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border);
+            color: white;
+            backdrop-filter: blur(5px);
+        }
+
+        .btn-outline-glass:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        /* Hero Text */
+        .hero-title {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 25px;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+
+        .text-gradient {
+            background: linear-gradient(to right, #00d2ff, #92fe9d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Code Preview Box */
+        .code-window {
+            background: rgba(13, 17, 23, 0.9);
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+            overflow: hidden;
+            font-family: 'Courier New', Courier, monospace;
+            backdrop-filter: blur(10px);
+        }
+
+        .code-header {
+            background: #161b22;
+            padding: 12px 20px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .dot { width: 12px; height: 12px; border-radius: 50%; }
+        .red { background: #ff5f56; }
+        .yellow { background: #ffbd2e; }
+        .green { background: #27c93f; }
+
+        .code-body {
+            padding: 20px;
+            color: #c9d1d9;
+            font-size: 14px;
+        }
+
+        /* Feature Cards */
+        .feature-box {
+            background: var(--card-bg);
+            border: 1px solid var(--glass-border);
+            padding: 40px;
+            border-radius: 24px;
+            height: 100%;
+            transition: 0.3s;
+            backdrop-filter: blur(5px);
+        }
+
+        .feature-box:hover {
+            border-color: var(--primary);
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateY(-10px);
+        }
+
+        /* Modal Styles */
+        .modal-content {
+            background: #0f172a;
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 20px;
+            box-shadow: 0 0 50px rgba(0, 210, 255, 0.15);
+        }
+
+        .form-control {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 14px 18px;
+            border-radius: 14px;
+            transition: 0.3s ease;
+        }
+
+        .form-control:focus {
+            background: rgba(255,255,255,0.1);
+            border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(0, 210, 255, 0.2);
+            color: white;
+        }
+
+        footer {
+            border-top: 1px solid var(--glass-border);
+            padding: 80px 0 40px;
+            background: #020617;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-book-bookmark"></i>BOOK<span class="text-gradient">API</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <i class="fas fa-bars text-white"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center gap-3">
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="#features">Fitur</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="/docs">Dokumentasi</a>
+                    </li>
+                    <li class="nav-item">
+                        <button class="btn btn-custom btn-outline-glass" data-bs-toggle="modal" data-bs-target="#loginModal">
+                            <i class="fas fa-sign-in-alt me-2"></i>Masuk
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="btn btn-custom btn-primary-gradient" data-bs-toggle="modal" data-bs-target="#authModal">
+                            Daftar Sekarang
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero-wrapper">
+        <div class="container">
+            <div class="row align-items-center g-5">
+                <div class="col-lg-6" data-aos="fade-right">
+                    <div class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 mb-4 border border-primary border-opacity-25">
+                        <i class="fas fa-sparkles me-2"></i>Satu API untuk Semua Buku di Dunia
+                    </div>
+                    <h1 class="hero-title">
+                        Akses <span class="text-gradient">Jutaan Data</span> Buku Secara Real-time.
+                    </h1>
+                    <p class="lead text-secondary mb-5 fs-5" style="color: #eee !important; text-shadow: 0 2px 4px rgba(0,0,0,0.8);">
+                        Bangun aplikasi perpustakaan modern, marketplace buku, atau sistem akademik dengan infrastruktur API tercepat dan paling stabil.
+                    </p>
+                    <div class="d-flex flex-wrap gap-3">
+                        <button class="btn btn-custom btn-primary-gradient btn-lg" data-bs-toggle="modal" data-bs-target="#authModal">
+                            Mulai Integrasi Gratis
+                        </button>
+                        <button class="btn btn-custom btn-outline-glass btn-lg" onclick="location.href='/docs'">
+                            <i class="fas fa-play-circle me-2"></i>Lihat Demo
+                        </button>
+                    </div>
+                </div>
+                <div class="col-lg-6" data-aos="fade-left">
+                    <div class="code-window">
+                        <div class="code-header">
+                            <div class="dot red"></div>
+                            <div class="dot yellow"></div>
+                            <div class="dot green"></div>
+                            <span class="ms-auto text-muted small">fetch-books.js</span>
+                        </div>
+                        <div class="code-body">
+                            <pre><code><span style="color: #ff7b72;">const</span> <span style="color: #79c0ff;">bookApi</span> = <span style="color: #ff7b72;">require</span>(<span style="color: #a5d6ff;">'@bookapi/sdk'</span>);
+
+<span style="color: #8b949e;">// Inisialisasi dengan API Key Anda</span>
+<span style="color: #ff7b72;">const</span> client = <span style="color: #ff7b72;">new</span> bookApi(<span style="color: #a5d6ff;">'YOUR_API_KEY'</span>);
+
+<span style="color: #ff7b72;">async function</span> <span style="color: #d2a8ff;">getLibraryData</span>() {
+  <span style="color: #ff7b72;">const</span> data = <span style="color: #ff7b72;">await</span> client.search({
+    query: <span style="color: #a5d6ff;">"Modern Architecture"</span>,
+    limit: <span style="color: #79c0ff;">10</span>
+  });
+  
+  <span style="color: #7ee787;">console</span>.log(<span style="color: #a5d6ff;">"Success!"</span>, data.results);
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Features Section -->
+    <section class="py-5" id="features" style="background: #020617;">
+        <div class="container py-5 text-center">
+            <h2 class="fw-800 fs-1 mb-5" data-aos="fade-up">Fitur <span class="text-gradient">Unggulan</span></h2>
+            <div class="row g-4">
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-box">
+                        <i class="fas fa-bolt text-primary mb-3 fs-2"></i>
+                        <h4>Ultra Fast</h4>
+                        <p class="text-muted">Response time di bawah 100ms.</p>
+                    </div>
+                </div>
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="feature-box">
+                        <i class="fas fa-shield-alt text-primary mb-3 fs-2"></i>
+                        <h4>Secure API</h4>
+                        <p class="text-muted">Enkripsi tingkat tinggi untuk tiap request.</p>
+                    </div>
+                </div>
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+                    <div class="feature-box">
+                        <i class="fas fa-code text-primary mb-3 fs-2"></i>
+                        <h4>Easy Integration</h4>
+                        <p class="text-muted">Dokumentasi lengkap dan SDK siap pakai.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal Login -->
+    <div class="modal fade" id="loginModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <h4 class="modal-title fw-800"><i class="fas fa-user-check text-primary me-2"></i>Selamat Datang</h4>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body py-4">
+                    <form id="loginForm">
+                        <div class="mb-3">
+                            <label class="form-label text-primary fw-bold"><i class="fas fa-envelope me-2"></i>KOLOM EMAIL</label>
+                            <input type="email" class="form-control" placeholder="nama@email.com" required>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label text-primary fw-bold"><i class="fas fa-lock me-2"></i>KOLOM PASSWORD</label>
+                            <input type="password" class="form-control" placeholder="••••••••" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary-gradient w-100 py-3 fw-bold">Masuk Sekarang <i class="fas fa-arrow-right ms-2"></i></button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Register -->
+    <div class="modal fade" id="authModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <h4 class="modal-title fw-800"><i class="fas fa-rocket text-primary me-2"></i>Daftar Developer</h4>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body py-4">
+                    <form id="registerForm">
+                        <div class="mb-3">
+                            <label class="form-label text-primary fw-bold"><i class="fas fa-user me-2"></i>KOLOM NAMA LENGKAP</label>
+                            <input type="text" class="form-control" placeholder="Nama Lengkap Anda" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label text-primary fw-bold"><i class="fas fa-envelope me-2"></i>KOLOM EMAIL BISNIS</label>
+                            <input type="email" class="form-control" placeholder="nama@perusahaan.com" required>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label text-primary fw-bold"><i class="fas fa-lock me-2"></i>KOLOM KATA SANDI</label>
+                            <input type="password" class="form-control" placeholder="Min. 8 Karakter" required minlength="8">
+                        </div>
+                        <button type="submit" class="btn btn-primary-gradient w-100 py-3 fw-bold">Buat Akun Gratis <i class="fas fa-paper-plane ms-2"></i></button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container text-center">
+            <p class="text-muted small">© 2026 Book API Global Inc. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({ duration: 1000, once: true });
+
+        // --- LOGIKA LOGIN ---
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const email = e.target.querySelector('input[type="email"]').value;
+            const password = e.target.querySelector('input[type="password"]').value;
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Memproses...';
+
+            try {
+                const res = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    localStorage.setItem('book_api_key', data.data.api_key);
+                    localStorage.setItem('user_name', data.data.name);
+
+                    Swal.fire({
+                        title: 'Berhasil Masuk!',
+                        text: 'Mengarahkan ke dashboard...',
+                        icon: 'success',
+                        timer: 1500,
+                        showConfirmButton: false,
+                        background: '#0f172a',
+                        color: '#fff'
+                    }).then(() => {
+                        window.location.href = data.data.role === 'admin' ? 'admin-dashboard.html' : 'developer.html';
+                    });
+                } else {
+                    Swal.fire('Gagal Login', data.message || 'Email atau Password salah', 'error');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = 'Masuk Sekarang <i class="fas fa-arrow-right ms-2"></i>';
+                }
+            } catch (err) {
+                Swal.fire('Error', 'Gagal terhubung ke server.', 'error');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Masuk Sekarang <i class="fas fa-arrow-right ms-2"></i>';
+            }
+        });
+
+        // --- LOGIKA REGISTER ---
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const name = e.target.querySelector('input[type="text"]').value;
+            const email = e.target.querySelector('input[type="email"]').value;
+            const password = e.target.querySelector('input[type="password"]').value;
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Mendaftarkan...';
+
+            try {
+                const res = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, password })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    Swal.fire({
+                        title: 'Akun Dibuat!',
+                        html: `API Key Anda: <br><code style="color:#00d2ff">${data.data.api_key}</code>`,
+                        icon: 'success',
+                        background: '#0f172a', color: '#fff'
+                    }).then(() => {
+                        localStorage.setItem('book_api_key', data.data.api_key);
+                        localStorage.setItem('user_name', data.data.name);
+                        window.location.href = 'developer.html';
+                    });
+                } else {
+                    Swal.fire('Gagal Daftar', data.message, 'error');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = 'Buat Akun Gratis <i class="fas fa-paper-plane ms-2"></i>';
+                }
+            } catch (err) {
+                Swal.fire('Error', 'Gagal terhubung ke server.', 'error');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Buat Akun Gratis <i class="fas fa-paper-plane ms-2"></i>';
+            }
+        });
+    </script>
+</body>
+</html>

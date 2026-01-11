@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Developer - Book API</title>
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #00d2ff;
+            --secondary: #0066ff;
+            --dark-bg: #030712;
+            --glass-bg: rgba(15, 23, 42, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: linear-gradient(to bottom, rgba(3, 7, 18, 0.4), rgba(3, 7, 18, 0.8)), 
+                        url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&q=80&w=2000');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: white;
+        }
+
+        .register-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            padding: 3rem;
+            border-radius: 30px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .logo-text {
+            font-weight: 800;
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .logo-text i { color: var(--primary); }
+
+        h2 { font-weight: 800; margin-bottom: 0.5rem; text-align: center; }
+        p { color: #94a3b8; text-align: center; margin-bottom: 2rem; font-size: 0.9rem; }
+
+        .form-group { position: relative; margin-bottom: 1.2rem; }
+        
+        .form-group i {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #475569;
+        }
+
+        .form-control {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 14px 14px 14px 50px;
+            border-radius: 15px;
+            transition: 0.3s;
+        }
+
+        .form-control:focus {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(0, 210, 255, 0.1);
+            color: white;
+        }
+
+        .btn-register {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none;
+            padding: 14px;
+            border-radius: 15px;
+            width: 100%;
+            font-weight: 800;
+            color: white;
+            margin-top: 1rem;
+            transition: 0.3s;
+        }
+
+        .btn-register:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(0, 102, 255, 0.4);
+        }
+
+        .alert {
+            margin-top: 1.5rem;
+            border-radius: 15px;
+            display: none;
+            font-size: 0.85rem;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .alert-success { background: rgba(16, 185, 129, 0.1); color: #34d399; }
+        .alert-danger { background: rgba(239, 68, 68, 0.1); color: #f87171; }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 1.5rem;
+            color: #94a3b8;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: 0.3s;
+        }
+
+        .back-link:hover { color: var(--primary); }
+        
+        /* Gaya khusus untuk menampilkan API Key */
+        .api-key-box {
+            background: rgba(0,0,0,0.3);
+            padding: 10px;
+            border-radius: 8px;
+            font-family: monospace;
+            word-break: break-all;
+            margin-top: 10px;
+            border: 1px dashed var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="register-card">
+        <div class="logo-text">
+            <i class="fas fa-book-sparkles"></i> BOOK<span style="color: var(--primary)">API</span>
+        </div>
+        <h2><i class="fas fa-rocket me-2 text-info"></i>Developer Register</h2>
+        <p>Dapatkan API Key anda untuk mulai membangun.</p>
+        
+        <form id="registerForm">
+            <div class="form-group">
+                <i class="fas fa-user"></i>
+                <input type="text" id="name" class="form-control" placeholder="Nama Lengkap" required>
+            </div>
+            <div class="form-group">
+                <i class="fas fa-envelope"></i>
+                <input type="email" id="email" class="form-control" placeholder="Email Address" required>
+            </div>
+            <div class="form-group">
+                <i class="fas fa-lock"></i>
+                <input type="password" id="password" class="form-control" placeholder="Password (Min. 6 Karakter)" required minlength="6">
+            </div>
+            <button type="submit" class="btn-register">
+                GET MY API KEY <i class="fas fa-key ms-2"></i>
+            </button>
+        </form>
+        
+        <div id="resultArea" class="alert"></div>
+        
+        <a href="index.html" class="back-link">
+            <i class="fas fa-arrow-left me-1"></i> Kembali ke Beranda
+        </a>
+    </div>
+
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const submitBtn = e.target.querySelector('button');
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const resultArea = document.getElementById('resultArea');
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
+
+            try {
+                // Sesuaikan URL ini dengan backend anda (localhost atau production)
+                const response = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, password })
+                });
+
+                const data = await response.json();
+
+                resultArea.style.display = 'block';
+                if (data.success) {
+                    resultArea.className = 'alert alert-success';
+                    resultArea.innerHTML = `
+                        <div class="fw-bold mb-2"><i class="fas fa-check-circle me-1"></i> Berhasil Terdaftar!</div>
+                        Simpan API Key anda baik-baik:
+                        <div class="api-key-box">${data.data.api_key}</div>
+                    `;
+                    submitBtn.innerHTML = 'BERHASIL!';
+                } else {
+                    resultArea.className = 'alert alert-danger';
+                    resultArea.innerText = data.message;
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = 'GET MY API KEY <i class="fas fa-key ms-2"></i>';
+                }
+            } catch (error) {
+                resultArea.style.display = 'block';
+                resultArea.className = 'alert alert-danger';
+                resultArea.innerText = "Gagal menghubungkan ke server.";
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'GET MY API KEY <i class="fas fa-key ms-2"></i>';
+            }
+        });
+    </script>
+</body>
+</html>

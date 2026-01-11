@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Portal - Book API</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+            --sidebar-width: 280px;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+
+        .wrapper { display: flex; min-height: 100vh; }
+
+        /* Sidebar Admin */
+        .sidebar { 
+            width: var(--sidebar-width); 
+            background: #0f172a; 
+            color: white;
+            position: fixed; 
+            height: 100%; 
+            padding: 2rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+        }
+
+        .logo-section {
+            text-decoration: none;
+            color: inherit;
+            margin-bottom: 3rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-section h4 {
+            font-weight: 800;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0;
+        }
+
+        .menu-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            color: #94a3b8;
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: 12px;
+            margin-bottom: 0.5rem;
+            transition: all 0.2s;
+        }
+
+        .menu-link:hover, .menu-link.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .main-content { 
+            margin-left: var(--sidebar-width); 
+            flex: 1; 
+            padding: 3rem 4rem; 
+        }
+
+        .admin-card {
+            background: white;
+            border-radius: 20px;
+            border: 1px solid #e2e8f0;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+        }
+
+        .btn-add {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 700;
+            transition: transform 0.2s;
+        }
+
+        .btn-add:hover {
+            transform: translateY(-2px);
+            color: white;
+        }
+
+        .table thead th {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #64748b;
+            padding: 1rem;
+            border-bottom: 2px solid #f1f5f9;
+        }
+
+        .form-control {
+            border-radius: 12px;
+            padding: 12px;
+            background: #f8fafc;
+            border: 2px solid #f1f5f9;
+        }
+
+        .form-control:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        }
+
+        .modal-content {
+            border-radius: 24px;
+            border: none;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="wrapper">
+        <aside class="sidebar">
+            <a href="index.html" class="logo-section">
+                <h4><i class="fas fa-shield-halved me-2"></i>ADMIN PORTAL</h4>
+            </a>
+            
+            <nav>
+                <p class="small fw-bold text-muted text-uppercase mb-3" style="font-size: 0.7rem; letter-spacing: 1px;">Management</p>
+                <a href="#" onclick="showSection('books')" id="link-books" class="menu-link active">
+                    <i class="fas fa-book me-3"></i> Kelola Buku
+                </a>
+                <a href="#" onclick="showSection('categories')" id="link-categories" class="menu-link">
+                    <i class="fas fa-tags me-3"></i> Kelola Kategori
+                </a>
+            </nav>
+
+            <div class="mt-auto border-top border-secondary pt-3">
+                <a href="index.html" onclick="logout()" class="menu-link text-danger">
+                    <i class="fas fa-sign-out-alt me-3"></i> Logout
+                </a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div id="section-books">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h2 class="fw-bold mb-1">Manajemen Buku</h2>
+                        <p class="text-muted small">Tambahkan atau hapus koleksi buku di database.</p>
+                    </div>
+                    <button class="btn btn-add shadow-sm" data-bs-toggle="modal" data-bs-target="#modalAddBook">
+                        <i class="fas fa-plus me-2"></i> Tambah Buku Baru
+                    </button>
+                </div>
+
+                <div class="admin-card">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Judul</th>
+                                    <th>Penulis</th>
+                                    <th>Kategori</th>
+                                    <th class="text-end">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminBooksTable">
+                                <tr>
+                                    <td colspan="4" class="text-center p-5 text-muted">Memuat data buku...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="section-categories" style="display: none;">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h2 class="fw-bold mb-1">Manajemen Kategori</h2>
+                        <p class="text-muted small">Kelola klasifikasi kategori buku.</p>
+                    </div>
+                    <button class="btn btn-add shadow-sm" data-bs-toggle="modal" data-bs-target="#modalAddCategory">
+                        <i class="fas fa-plus me-2"></i> Tambah Kategori
+                    </button>
+                </div>
+
+                <div class="admin-card" style="max-width: 600px;">
+                    <ul class="list-group list-group-flush" id="adminCategoryList">
+                        </ul>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div class="modal fade" id="modalAddBook" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0 p-4 pb-0">
+                    <h5 class="fw-bold">Input Data Buku</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="formAddBook">
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-muted">JUDUL BUKU</label>
+                            <input type="text" id="bookTitle" class="form-control" placeholder="Masukkan judul" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-muted">PENULIS</label>
+                            <input type="text" id="bookAuthor" class="form-control" placeholder="Nama pengarang" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-muted">KATEGORI (ID)</label>
+                            <input type="number" id="bookCatId" class="form-control" placeholder="Cth: 1" required>
+                        </div>
+                        <button type="submit" class="btn btn-add w-100 py-3 mt-3 shadow">Simpan Buku</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalAddCategory" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0 p-4 pb-0">
+                    <h5 class="fw-bold">Buat Kategori Baru</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="formAddCategory">
+                        <div class="mb-4">
+                            <label class="form-label small fw-bold text-muted text-uppercase">Nama Kategori</label>
+                            <input type="text" id="catNameInput" class="form-control" placeholder="Contoh: Horror, Novel" required>
+                        </div>
+                        <button type="submit" class="btn btn-add w-100 py-3 shadow">Simpan Kategori</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const adminKey = localStorage.getItem('dev_key');
+
+        function showSection(name) {
+            document.getElementById('section-books').style.display = name === 'books' ? 'block' : 'none';
+            document.getElementById('section-categories').style.display = name === 'categories' ? 'block' : 'none';
+            document.getElementById('link-books').classList.toggle('active', name === 'books');
+            document.getElementById('link-categories').classList.toggle('active', name === 'categories');
+            
+            if(name === 'books') loadAdminBooks();
+            else loadAdminCategories();
+        }
+
+        async function loadAdminBooks() {
+            try {
+                const res = await fetch('/api/books', { headers: { 'x-api-key': adminKey } });
+                const result = await res.json();
+                const tbody = document.getElementById('adminBooksTable');
+                tbody.innerHTML = '';
+
+                if (result.success && result.data.length > 0) {
+                    result.data.forEach(book => {
+                        tbody.innerHTML += `
+                            <tr>
+                                <td><span class="fw-bold text-dark">${book.title}</span></td>
+                                <td>${book.author}</td>
+                                <td><span class="badge bg-light text-dark border px-3">${book.category || 'No Category'}</span></td>
+                                <td class="text-end">
+                                    <button class="btn btn-sm btn-outline-danger border-0" onclick="deleteBook(${book.id})">
+                                        <i class="fas fa-trash-can"></i>
+                                    </button>
+                                </td>
+                            </tr>`;
+                    });
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="4" class="text-center p-5 text-muted">Belum ada buku terdaftar.</td></tr>';
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        async function loadAdminCategories() {
+            try {
+                const res = await fetch('/api/categories', { headers: { 'x-api-key': adminKey } });
+                const result = await res.json();
+                const list = document.getElementById('adminCategoryList');
+                list.innerHTML = '';
+
+                if (result.success && result.data.length > 0) {
+                    result.data.forEach(cat => {
+                        list.innerHTML += `
+                            <li class="list-group-item d-flex justify-content-between align-items-center py-3 border-0 border-bottom">
+                                <div><span class="text-muted me-2 small">#${cat.id}</span><span class="fw-bold">${cat.name}</span></div>
+                                <button class="btn btn-sm text-danger" onclick="deleteCategory(${cat.id})"><i class="fas fa-xmark"></i></button>
+                            </li>`;
+                    });
+                } else {
+                    list.innerHTML = '<li class="list-group-item text-center p-4 text-muted">Belum ada kategori.</li>';
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        // Simpan Buku Baru
+        document.getElementById('formAddBook').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const body = {
+                title: document.getElementById('bookTitle').value,
+                author: document.getElementById('bookAuthor').value,
+                category_id: parseInt(document.getElementById('bookCatId').value)
+            };
+
+            try {
+                const res = await fetch('/api/books', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'x-api-key': adminKey },
+                    body: JSON.stringify(body)
+                });
+                const data = await res.json();
+                if(data.success) {
+                    bootstrap.Modal.getInstance(document.getElementById('modalAddBook')).hide();
+                    document.getElementById('formAddBook').reset();
+                    loadAdminBooks();
+                } else { alert("Gagal: " + data.message); }
+            } catch (err) { alert("Error sistem."); }
+        });
+
+        // Simpan Kategori Baru (Versi Modal Modern)
+        document.getElementById('formAddCategory').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('catNameInput').value;
+
+            try {
+                const res = await fetch('/api/categories', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'x-api-key': adminKey },
+                    body: JSON.stringify({ name })
+                });
+                const data = await res.json();
+                if(data.success) {
+                    bootstrap.Modal.getInstance(document.getElementById('modalAddCategory')).hide();
+                    document.getElementById('formAddCategory').reset();
+                    loadAdminCategories();
+                } else { alert("Gagal: " + data.message); }
+            } catch (e) { alert("Error sistem."); }
+        });
+
+        async function deleteBook(id) {
+            if(!confirm('Hapus buku ini?')) return;
+            const res = await fetch(`/api/books/${id}`, { method: 'DELETE', headers: { 'x-api-key': adminKey } });
+            if((await res.json()).success) loadAdminBooks();
+        }
+
+        async function deleteCategory(id) {
+            if(!confirm('Hapus kategori ini?')) return;
+            const res = await fetch(`/api/categories/${id}`, { method: 'DELETE', headers: { 'x-api-key': adminKey } });
+            if((await res.json()).success) loadAdminCategories();
+            else alert("Gagal menghapus kategori. Cek apakah ada buku yang menggunakannya.");
+        }
+
+        function logout() { localStorage.clear(); window.location.href = 'index.html'; }
+
+        // Cek login admin
+        if (!adminKey) { window.location.href = 'index.html'; } else { loadAdminBooks(); }
+    </script>
+</body>
+</html>
