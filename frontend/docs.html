@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dokumentasi - Book API</title>
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <style>
+        :root {
+            --primary: #00d2ff;
+            --secondary: #0066ff;
+            --dark-bg: #030712;
+            --sidebar-w: 280px;
+            --glass-bg: rgba(15, 23, 42, 0.75);
+            --border: rgba(255, 255, 255, 0.15);
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: linear-gradient(to bottom, rgba(3, 7, 18, 0.8), rgba(3, 7, 18, 0.95)), 
+                        url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&q=80&w=2000');
+            background-size: cover;
+            background-attachment: fixed;
+            color: #ffffff;
+            min-height: 100vh;
+            margin: 0;
+            scroll-behavior: smooth;
+        }
+
+        .dashboard-layout { display: flex; }
+
+        .main-content {
+            margin-left: var(--sidebar-w);
+            flex: 1;
+            padding: 50px 60px;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Teks Judul Dibuat Sangat Jelas */
+        .page-header h2 { 
+            font-weight: 900; 
+            letter-spacing: -2px; 
+            font-size: 2.8rem; 
+            text-shadow: 0 5px 15px rgba(0,0,0,0.5); 
+        }
+        .page-header h5 { 
+            color: var(--primary) !important; 
+            font-weight: 800; 
+            letter-spacing: 2px; 
+            text-shadow: 0 0 10px rgba(0, 210, 255, 0.4); 
+        }
+
+        /* Auth Info Box - Kontras Tinggi */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px);
+            border: 2px solid var(--border);
+            border-radius: 30px;
+            padding: 40px;
+            margin-bottom: 45px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.6);
+        }
+
+        .auth-header { display: flex; align-items: center; gap: 20px; }
+        .icon-box {
+            width: 60px; height: 60px;
+            background: var(--primary);
+            color: #000; border-radius: 18px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; flex-shrink: 0;
+            box-shadow: 0 0 20px rgba(0, 210, 255, 0.5);
+        }
+
+        /* Endpoint Styling */
+        .group-title {
+            font-size: 0.85rem; font-weight: 900; color: var(--primary);
+            text-transform: uppercase; letter-spacing: 3px;
+            margin: 60px 0 25px; padding-left: 15px;
+            border-left: 5px solid var(--primary);
+        }
+
+        .endpoint-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1.5px solid var(--border);
+            border-radius: 20px;
+            margin-bottom: 30px;
+            overflow: hidden;
+            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .endpoint-card:hover { 
+            border-color: var(--primary); 
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 210, 255, 0.15);
+        }
+
+        /* Badge Metode API */
+        .method-badge {
+            font-weight: 900; font-size: 0.75rem; padding: 8px 16px;
+            border-radius: 10px; color: #fff; text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .GET { background: #10b981; box-shadow: 0 0 10px rgba(16, 185, 129, 0.3); }
+        .POST { background: #0066ff; box-shadow: 0 0 10px rgba(0, 102, 255, 0.3); }
+        .PUT { background: #f59e0b; box-shadow: 0 0 10px rgba(245, 158, 11, 0.3); }
+        .DELETE { background: #ef4444; box-shadow: 0 0 10px rgba(239, 68, 68, 0.3); }
+
+        .url-text { font-family: 'Fira Code', monospace; color: #ffffff; font-size: 1rem; font-weight: 600; }
+
+        /* Code Block ala VS Code Dark */
+        pre {
+            background: #0d1117;
+            padding: 30px;
+            margin: 0;
+            color: #c9d1d9;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            line-height: 1.7;
+            border-top: 1px solid var(--border);
+            border-radius: 0 0 20px 20px;
+        }
+
+        .copy-code {
+            float: right;
+            background: rgba(0, 210, 255, 0.1);
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            font-size: 0.75rem;
+            padding: 8px 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 800;
+            transition: 0.3s;
+        }
+        .copy-code:hover { background: var(--primary); color: #000; }
+
+        .key-token {
+            background: #000;
+            padding: 8px 15px;
+            border-radius: 10px;
+            border: 1.5px dashed var(--primary);
+            color: var(--primary);
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        /* Penjelasan Deskripsi Dibuat Tebal & Terbaca */
+        .desc-text {
+            color: #e2e8f0 !important;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        @media (max-width: 992px) { 
+            .main-content { margin-left: 0; padding: 100px 20px 40px; } 
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-layout">
+        <!-- Sidebar container untuk navbar.js -->
+        <div id="navbar-container"></div>
+
+        <main class="main-content">
+            <header class="page-header mb-5">
+                <h5 class="mb-2"><i class="fas fa-book-bookmark me-2"></i>API REFERENCE V1.0</h5>
+                <h2>Dokumentasi Teknis</h2>
+                <p class="text-white-50 fs-5">Integrasikan database buku ke aplikasi Anda dengan standar keamanan enterprise.</p>
+            </header>
+
+            <!-- Authentication Section -->
+            <section class="glass-card">
+                <div class="auth-header mb-4">
+                    <div class="icon-box"><i class="fas fa-shield-halved"></i></div>
+                    <div>
+                        <h4 class="fw-900 mb-0" style="letter-spacing:-1px">Autentikasi Header</h4>
+                        <p class="text-primary small fw-bold mb-0">KEAMANAN ADALAH PRIORITAS UTAMA</p>
+                    </div>
+                </div>
+                <div class="lh-lg">
+                    <p class="desc-text mb-4">Setiap permintaan ke server kami harus menyertakan kunci akses unik Anda. Kirimkan API Key melalui header HTTP <span class="text-primary fw-bold">x-api-key</span> pada setiap request.</p>
+                    <div class="p-4 bg-dark bg-opacity-50 rounded-4 border border-white border-opacity-10 d-inline-block w-100">
+                        <span class="small text-white-50 me-3 fw-bold">CONTOH HEADER:</span>
+                        <span class="key-token">x-api-key: sk_live_your_secret_key_12345</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Container for Endpoints -->
+            <div id="docs-container">
+                <div class="text-center py-5">
+                    <i class="fas fa-circle-notch fa-spin text-primary fs-1 mb-3"></i>
+                    <p class="fw-bold text-white-50">Menghubungkan ke server dokumentasi...</p>
+                </div>
+            </div>
+
+            <footer class="mt-5 pt-5 text-center text-white-50 small">
+                © 2026 Book API Technical Portal. Built with <i class="fas fa-bolt text-primary"></i> for High Performance.
+            </footer>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="navbar.js"></script>
+    
+    <script>
+        // Inisialisasi Sidebar dengan menu 'docs' aktif
+        initNavbar('docs');
+
+        /**
+         * Load dokumentasi JSON secara dinamis
+         */
+        async function loadDocs() {
+            try {
+                const res = await fetch('/api/docs-json');
+                const data = await res.json();
+                const container = document.getElementById('docs-container');
+                container.innerHTML = ''; 
+                
+                data.endpoints.forEach(group => {
+                    let groupHtml = `<h6 class="group-title">${group.group} ENDPOINTS</h6>`;
+                    
+                    group.routes.forEach(route => {
+                        const host = window.location.host;
+                        const curlCode = `curl -X ${route.method} http://${host}${route.path} \\ \n   -H "x-api-key: YOUR_KEY" \\ \n   -H "Content-Type: application/json"`;
+                        
+                        groupHtml += `
+                            <div class="endpoint-card">
+                                <div class="p-4 d-flex align-items-center justify-content-between flex-wrap gap-3">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <span class="method-badge ${route.method}">${route.method}</span>
+                                        <span class="url-text">${route.path}</span>
+                                    </div>
+                                    <div class="desc-text small text-end">${route.description}</div>
+                                </div>
+                                <div class="position-relative">
+                                    <button class="copy-code" onclick="copyToClipboard(\`${curlCode}\`)">
+                                        <i class="far fa-copy me-2"></i>SALIN CURL
+                                    </button>
+                                    <pre><code>${curlCode}</code></pre>
+                                </div>
+                            </div>`;
+                    });
+                    container.innerHTML += groupHtml;
+                });
+            } catch (e) { 
+                console.error(e);
+                document.getElementById('docs-container').innerHTML = `
+                    <div class="glass-card text-center text-danger py-5 border-danger">
+                        <i class="fas fa-exclamation-triangle fs-1 mb-3"></i>
+                        <h5 class="fw-bold">Gagal Sinkronisasi</h5>
+                        <p class="text-white-50">Pastikan server backend Anda menyala untuk mengambil skema API.</p>
+                    </div>`;
+            }
+        }
+
+        /**
+         * Helper Salin ke Clipboard
+         */
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text);
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'success',
+                title: 'Request Curl disalin!',
+                showConfirmButton: false,
+                timer: 2000,
+                background: '#0f172a',
+                color: '#fff'
+            });
+        }
+
+        window.onload = loadDocs;
+    </script>
+</body>
+</html>
