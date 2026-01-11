@@ -5,21 +5,31 @@ import { checkApiKey } from "../middleware/apiKey.js";
 const router = express.Router();
 
 /**
- * GET ALL CATEGORIES
- * Mengambil semua data kategori dari MySQL untuk ditampilkan di Playground
+ * GET ALL CATEGORIES - DENGAN SEARCH
  */
 router.get("/", checkApiKey, async (req, res) => {
   try {
-    const [categories] = await db.query(`
+    const { search } = req.query;
+    
+    let query = `
       SELECT 
         c.id,
         c.name,
         COUNT(b.id) AS jumlah_buku
       FROM categories c
       LEFT JOIN books b ON c.id = b.category_id
-      GROUP BY c.id, c.name
-      ORDER BY c.id ASC
-    `);
+    `;
+    const params = [];
+    
+    // Jika ada parameter search, filter berdasarkan nama kategori
+    if (search) {
+      query += " WHERE c.name LIKE ?";
+      params.push(`%${search}%`);
+    }
+    
+    query += " GROUP BY c.id, c.name ORDER BY c.id ASC";
+    
+    const [categories] = await db.query(query, params);
     
     res.json({
       success: true,

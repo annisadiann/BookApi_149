@@ -28,7 +28,7 @@ const upload = multer({
 });
 
 /**
- * 2. GET ALL BOOKS
+ * 2. GET ALL BOOKS (DIPERBAIKI: Search di Category juga)
  */
 router.get("/", checkApiKey, async (req, res) => {
   try {
@@ -48,8 +48,8 @@ router.get("/", checkApiKey, async (req, res) => {
     }
 
     if (search) {
-      query += " AND (books.title LIKE ? OR books.author LIKE ?)";
-      params.push(`%${search}%`, `%${search}%`);
+      query += " AND (books.title COLLATE utf8mb4_general_ci LIKE ? OR books.author COLLATE utf8mb4_general_ci LIKE ? OR categories.name COLLATE utf8mb4_general_ci LIKE ?)";
+      params.push(`%${search}%`, `%${search}%`, `%${search}%`);
     }
 
     const offset = (page - 1) * limit;
@@ -80,7 +80,6 @@ router.post("/", checkApiKey, upload.single("image"), async (req, res) => {
       return res.status(400).json({ success: false, message: "Title and author are required" });
     }
 
-    // Pastikan urutan kolom sesuai: title, author, publisher, year, category_id, isbn, description, image
     const [result] = await db.query(
       `INSERT INTO books 
        (title, author, publisher, year, category_id, isbn, description, image)
@@ -126,7 +125,6 @@ router.put("/:id", checkApiKey, upload.single("image"), async (req, res) => {
       return res.status(404).json({ success: false, message: "Book not found" });
     }
 
-    // Update kueri untuk menyertakan description
     let query = `UPDATE books SET title=?, author=?, publisher=?, year=?, category_id=?, isbn=?, description=?`;
     let params = [title, author, publisher, year, category_id, isbn, description];
 
