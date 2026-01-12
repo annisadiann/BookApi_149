@@ -68,18 +68,15 @@ app.get("/api/docs-json", (req, res) => {
     });
 });
 
-// --- 5. ROUTING DOKUMENTASI & HALAMAN UTAMA ---
-const serveDocs = (req, res) => res.sendFile(path.join(__dirname, "frontend/docs.html"));
-
-app.get("/docs", serveDocs);
-app.get("/api/docs", serveDocs);
-app.get("/documentation", serveDocs);
-
-app.get("/", (req, res) => res.sendFile(path.join(__dirname, "frontend/index.html")));
+// --- 5. ROUTING HALAMAN SPESIFIK (HARUS DI ATAS HANDLER OTOMATIS) ---
+app.get("/docs", (req, res) => res.sendFile(path.join(__dirname, "frontend/docs.html")));
 app.get("/developer", (req, res) => res.sendFile(path.join(__dirname, "frontend/developer.html")));
 app.get("/playground", (req, res) => res.sendFile(path.join(__dirname, "frontend/playground.html")));
 
-// Handler Otomatis untuk file .html lainnya (Admin Dashboard, dll)
+// --- 6. ROUTE HOMEPAGE ---
+app.get("/", (req, res) => res.sendFile(path.join(__dirname, "frontend/index.html")));
+
+// --- 7. HANDLER OTOMATIS UNTUK FILE .HTML LAINNYA ---
 app.get("/:page", (req, res, next) => {
     if (req.params.page.startsWith('api')) return next();
     
@@ -93,7 +90,7 @@ app.get("/:page", (req, res, next) => {
     }
 });
 
-// --- 6. HANDLE 404 (CUSTOM PREMIUM THEME) ---
+// --- 8. HANDLE 404 (CUSTOM PREMIUM THEME) ---
 app.use((req, res) => {
     // Jika request API yang salah
     if (req.path.startsWith('/api')) {
@@ -137,7 +134,7 @@ app.use((req, res) => {
     `);
 });
 
-// --- 7. GLOBAL ERROR HANDLER ---
+// --- 9. GLOBAL ERROR HANDLER ---
 app.use((err, req, res, next) => {
     console.error(' [!] Server Error:', err.stack);
     res.status(500).json({
