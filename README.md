@@ -43,10 +43,11 @@ A powerful RESTful API for managing book catalogs with modern authentication and
 
 <img width="960" height="510" alt="image" src="https://github.com/user-attachments/assets/15a58843-a99b-4ab7-bc9f-c3f8959dc2c4" />
 
-<img width="960" height="510" alt="Screenshot 2026-01-13 215715" src="https://github.com/user-attachments/assets/07938f7a-b8e7-496a-86ec-7e49ea6f3055" />
+
+<img width="960" height="510" alt="Screenshot 2026-01-13 215715" src="https://github.com/user-attachments/assets/3e0891b2-9d6d-4217-980b-f89937f0681b" />
 
 
-<img width="960" height="510" alt="Screenshot 2026-01-13 215735" src="https://github.com/user-attachments/assets/748e6785-58e8-43a2-8f00-d11aabf48584" />
+<img width="960" height="510" alt="Screenshot 2026-01-13 215735" src="https://github.com/user-attachments/assets/37d3455b-02f9-4e37-86bd-482ca4c26fe0" />
 
 
 <img width="960" height="509" alt="image" src="https://github.com/user-attachments/assets/3be9ec42-c8b9-492f-a358-d92896abbcce" />
